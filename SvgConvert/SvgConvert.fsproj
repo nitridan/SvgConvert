@@ -5,6 +5,8 @@
   <ItemGroup>
     <Compile Include="SvgCleanup.fs" />
     <Compile Include="SvgCleanupModule.fs" />
+    <Compile Include="SvgConverter.fs" />
+    <Compile Include="SvgConverterModule.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Core" Version="4.1.*" />

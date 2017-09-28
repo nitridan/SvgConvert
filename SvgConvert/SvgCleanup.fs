@@ -4,31 +4,25 @@ open System.Xml.Linq;
 
 module SvgCleanup =
 
-    let xname name = XNamespace.Get(name)
-
-    let svgNameSpace = xname "http://www.w3.org/2000/svg"
-    let dcNameSpace = xname "http://purl.org/dc/elements/1.1/"
-    let ccNameSpace = xname "http://creativecommons.org/ns#"
-    let rdfNamespace = xname "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    let sodipodiNamespace = xname "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-    let inkscapeNamespace = xname "http://www.inkscape.org/namespaces/inkscape"
+    let private xname name = XNamespace.Get(name)
     
-    let redundantNamespaces = [|
-        dcNameSpace
-        rdfNamespace
-        sodipodiNamespace
-        inkscapeNamespace
+    let private redundantNamespaces = [|
+        xname "http://purl.org/dc/elements/1.1/"
+        xname "http://creativecommons.org/ns#"
+        xname "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xname "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xname "http://www.inkscape.org/namespaces/inkscape"
         |]
 
-    let descendants (doc: XDocument) = doc.Descendants() |> Seq.toArray
+    let private descendants (doc: XDocument) = doc.Descendants() |> Seq.toArray
 
-    let attributes doc = (descendants doc).Attributes() |> Seq.toArray
+    let private attributes doc = (descendants doc).Attributes() |> Seq.toArray
 
-    let removeXElements (els: seq<XElement>) = els |> Seq.map (fun x -> x.Remove()) |> Seq.length
+    let private removeXElements (els: seq<XElement>) = els |> Seq.map (fun x -> x.Remove()) |> Seq.length
 
-    let removeAttributes (attrs: seq<XAttribute>) = attrs |> Seq.map (fun x -> x.Remove()) |> Seq.length
+    let private removeAttributes (attrs: seq<XAttribute>) = attrs |> Seq.map (fun x -> x.Remove()) |> Seq.length
 
-    let cleanGarbage (doc: XDocument, redundantNamespace: XNamespace) =
+    let private cleanGarbage (doc: XDocument, redundantNamespace: XNamespace) =
         let namespaceName = redundantNamespace.NamespaceName
         printfn "Removing redundant elements for namespace: %s" namespaceName
         let elCount = 
@@ -48,10 +42,10 @@ module SvgCleanup =
 
         printfn "Removed %i attributes" attribCount
 
-    let cleanSvgGarbage (doc: XDocument, redundantNamespace: XNamespace) =
+    let private cleanSvgGarbage (doc: XDocument, redundantNamespace: XNamespace) =
         let namespaceName = redundantNamespace.NamespaceName
         printfn "Removing redundant elements for namespace: %s" namespaceName
-        let redundantElements = [| "defs"; "metadata" |]
+        let redundantElements = [| "defs"; "metadata"; "namedview" |]
         let elCount =
             seq { 
                 for el in descendants doc do
@@ -76,5 +70,5 @@ module SvgCleanup =
         printfn "Cleaning garbage namespaces from SVG"
         let c = redundantNamespaces |> Seq.map (fun x-> cleanGarbage (doc, x)) |> Seq.length
         printfn "Cleaned %i garbage namespaces" c
-        cleanSvgGarbage (doc, svgNameSpace)
+        cleanSvgGarbage (doc, xname "http://www.w3.org/2000/svg")
         doc.ToString()
