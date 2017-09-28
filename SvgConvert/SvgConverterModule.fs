@@ -16,4 +16,4 @@ module SvgConverterModule =
             with get () = svgString
             and set value = svgString <- value
 
-        override this.ProcessRecord() = this.WriteObject(SvgCleanup.cleanupSvg svgString)
+        override this.ProcessRecord() = this.WriteObject(SvgConverter.convertSvg svgString)
