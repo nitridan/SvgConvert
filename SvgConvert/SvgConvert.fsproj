@@ -9,9 +9,7 @@
     <Compile Include="SvgConverterModule.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="4.1.*" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.0.0-*"/>
-    <PackageReference Include="System.Management.Automation" Version="6.0.0-*" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.0.0-*" PrivateAssets="All"/>
   </ItemGroup>
 
 </Project>
